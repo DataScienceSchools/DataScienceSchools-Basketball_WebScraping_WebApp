@@ -4,4 +4,6 @@ Pillow==7.0.0
 streamlit==0.80.0
 matplotlib==3.4.1
 base58==2.1.0
+lxml==4.6.3
+
 
