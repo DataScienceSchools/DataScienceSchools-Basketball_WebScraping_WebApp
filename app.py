@@ -1,6 +1,7 @@
 
 import base64
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from PIL import Image
 import streamlit as st
@@ -13,13 +14,13 @@ st.set_page_config(
       layout="wide",
       initial_sidebar_state="expanded")
 
-image_back = Image.open('back.png')
-st.image(image_back, use_column_width=True)
 
-st.markdown("""
-[Data Science School](https://datascienceschools.github.io/)
-""")
-st.write('---')
+with st.beta_expander("Author"):
+    st.markdown("""
+    - Bahar GK
+    - [Data Science School](https://datascienceschools.github.io/)
+    """)
+
 
 st.title('NBA Player Stats Explorer')
 
@@ -50,6 +51,13 @@ def load_data(year):
 playerstats = load_data(selected_year)
 
 
+def filedownload(df):
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
+    href = f'<a href="data:file/csv;base64,{b64}" download="playerstats.csv">Download CSV File</a>'
+    return href
+
+
 # Sidebar - Team selection
 sorted_unique_team = sorted(playerstats.Tm.unique())
 selected_team = st.sidebar.multiselect('Team', sorted_unique_team, sorted_unique_team)
@@ -71,11 +79,7 @@ st.write('Data Dimension: ' + str(df_selected_team.shape[0]) + ' rows and ' + st
 # Download NBA player stats data
 # https://discuss.streamlit.io/t/how-to-download-file-in-streamlit/1806
 
-def filedownload(df):
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    href = f'<a href="data:file/csv;base64,{b64}" download="playerstats.csv">Download CSV File</a>'
-    return href
+
 
 st.write('---')
 st.header('Download CSV File:')
@@ -87,6 +91,7 @@ st.write('---')
 # Heatmap
 st.header('Intercorrelation Matrix Heatmap:')
 st.write('\n\n\n')
+
 
 if st.button('Intercorrelation Heatmap'):
     st.header('Intercorrelation Matrix Heatmap')
